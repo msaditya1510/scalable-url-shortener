@@ -19,7 +19,7 @@ public class CorsConfig {
                 registry.addMapping("/**")
 
                         // allow frontend
-                        .allowedOriginPatterns("http://localhost:5173","https://routr-one.vercel.app/**")
+                        .allowedOriginPatterns("http://localhost:5173","https://routr-one.vercel.app")
 
                         // allowed HTTP methods
                         .allowedMethods("GET","POST","PUT","DELETE","PATCH","OPTIONS")
