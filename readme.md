@@ -1,6 +1,6 @@
-# Scalable URL Shortener Service
+# Routr
 
-A backend-focused URL shortener built using Java and Spring Boot. The project is designed to handle fast URL redirection using Redis caching and supports basic analytics tracking for shortened URLs.
+A backend-focused URL shortener built using Java and Spring Boot, featuring Redis-based caching, analytics tracking, and a lightweight React frontend for link management.
 
 ## Features
 
@@ -9,11 +9,13 @@ A backend-focused URL shortener built using Java and Spring Boot. The project is
 - Redis cache-aside strategy for faster lookups
 - URL click analytics
 - Redis-to-database scheduled synchronization
+- Lightweight frontend for URL shortening and analytics lookup
 - Global exception handling
 - Unit and integration testing
 
 ## Tech Stack
 
+### Backend
 - Java
 - Spring Boot
 - Spring Data JPA
@@ -22,10 +24,17 @@ A backend-focused URL shortener built using Java and Spring Boot. The project is
 - JUnit & Mockito
 - MockMvc
 
+### Frontend
+- React
+- Vite
+- Tailwind CSS
+
 ## Architecture Overview
 
 ```text
 Client
+   ↓
+React Frontend
    ↓
 Spring Boot API
    ↓
@@ -38,7 +47,7 @@ PostgreSQL
 
 1. User requests a short URL
 2. Application first checks Redis cache
-3. If cache miss occurs, data is fetched from the database
+3. If cache miss occurs, data is fetched from PostgreSQL
 4. Retrieved data is cached for future requests
 5. User is redirected to the original URL
 
@@ -47,6 +56,17 @@ PostgreSQL
 - Click counts are temporarily stored in Redis
 - A scheduled job periodically syncs analytics data to PostgreSQL
 - Total clicks are calculated using both Redis and database values
+
+## Project Structure
+
+```text
+.
+├── frontend/        # React + Vite frontend
+├── src/             # Spring Boot backend
+├── Dockerfile
+├── pom.xml
+└── README.md
+```
 
 ## API Endpoints
 
@@ -89,17 +109,20 @@ Example Response:
 
 ### Prerequisites
 
-- Java 17+
+- Java 21+
 - Maven
 - Redis instance
 - PostgreSQL database
+- Node.js
 
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/msaditya1510/scalable-url-shortener
+git clone https://github.com/msaditya1510/scalable-url-shortener.git
 cd scalable-url-shortener
 ```
+
+## Backend Setup
 
 ### Configure Environment Variables
 
@@ -113,21 +136,35 @@ REDIS_PORT=
 REDIS_PASSWORD=
 ```
 
-### Run the Application
+### Run Backend
 
 ```bash
 ./mvnw spring-boot:run
 ```
 
-The application starts on:
+Backend runs on:
 
 ```text
-http://localhost:9090
+http://localhost:8080
+```
+
+## Frontend Setup
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Frontend runs on:
+
+```text
+http://localhost:5173
 ```
 
 ## Testing
 
-The project includes:
+The backend includes:
 
 - Unit tests using Mockito
 - Integration tests using MockMvc
@@ -138,14 +175,29 @@ Run tests using:
 ./mvnw test
 ```
 
+## Deployment
+
+- Backend deployed on Render using Docker
+- Frontend deployed on Vercel
+- PostgreSQL hosted on Supabase
+- Redis hosted on Redis Cloud
+
 ## Design Decisions
 
 - Base62 encoding is used to generate short and collision-free URLs
 - Redis cache-aside strategy reduces database load for frequently accessed URLs
 - Analytics updates are first written to Redis and later synchronized to PostgreSQL using a scheduled task
+- Frontend short URLs are routed through deployment rewrites while backend handles redirect resolution
 
 ## Current Limitations
 
 - Analytics are based on raw HTTP requests, so browser prefetching may slightly affect counts
 - Current Redis key scanning approach is not optimized for very large scale
 - The analytics pipeline follows eventual consistency because Redis and database synchronization happens periodically
+
+## Future Improvements
+
+- GitHub Actions workflow to periodically ping deployments and reduce cold starts
+- Custom aliases for shortened URLs
+- Rate limiting and abuse protection
+- Expiration support for temporary URLs
