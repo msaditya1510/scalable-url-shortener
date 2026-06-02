@@ -42,7 +42,7 @@ public class UrlController {
 	@GetMapping("/stats/{shortCode}")
 	public ResponseEntity<Map<String, Object>> getStats(@PathVariable String shortCode) {
 
-	    long count = urlService.getClickCount(shortCode);
+	    long count = urlService.getClickCount(shortCode.toLowerCase());
 
 	    return ResponseEntity.ok(Map.of(
 	            "shortCode", shortCode,
