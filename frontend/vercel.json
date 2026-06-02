@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/:shortCode([a-zA-Z0-9]+)",
-      "destination": "https://scalable-url-shortener-tplr.onrender.com/:shortCode"
+      "destination": "https://msaditya1510-url-shortener.hf.space/:shortCode"
     }
   ]
 }
